@@ -36,8 +36,15 @@ The code is currently *very very very heavily* Mac specific. Some functionality 
 
 Other dependencies:
 
+### Gems
+
 * ChunkyPNG & OilyPNG (http://chunkypng.com/)
 * OpenGL gem (https://rubygems.org/gems/opengl)
+
+### Utilities
+
+* ImageMagick (www.imagemagick.org -- for animated gifs)
+* POV-Ray (http://povray.org/ -- for 3D rendering)
 
 ## License
 
