@@ -1,7 +1,9 @@
+require 'mazes/gradient'
+
 module Mazes
   class Dijkstra
     attr_reader :root
-    attr_reader :frontier
+    attr_reader :frontier, :colors
     attr_reader :farthest_cell, :greatest_distance
 
     def self.run(root, options={})
@@ -10,11 +12,19 @@ module Mazes
 
     def initialize(root, colors: 0xff0000ff..0x200000ff)
       @root = root.is_a?(Array) ? root : [ root ]
-      @colors = colors
+      self.colors = colors
       @frontier = @root
       @distances = @root.inject({}) { |h,k| h.update k => 0 }
       @farthest_cell = nil
       @greatest_distance = 0
+    end
+
+    def colors=(colors)
+      @colors = case colors
+        when Range then Gradient.from_range(colors)
+        when Array then Gradient.from_points(colors)
+        else colors
+      end
     end
 
     def [](cell)
@@ -78,26 +88,17 @@ module Mazes
     def color_set
       set = {}
 
-      lo_r = (@colors.begin & 0xff000000) >> 24
-      lo_g = (@colors.begin & 0x00ff0000) >> 16
-      lo_b = (@colors.begin & 0x0000ff00) >> 8
-      hi_r = (@colors.end & 0xff000000) >> 24
-      hi_g = (@colors.end & 0x00ff0000) >> 16
-      hi_b = (@colors.end & 0x0000ff00) >> 8
-
-      dr = hi_r - lo_r
-      dg = hi_g - lo_g
-      db = hi_b - lo_b
-
       denom = (@greatest_distance > 0 ? @greatest_distance : 1).to_f
       0.upto(@greatest_distance) do |distance|
         t = distance / denom
+        color = colors[t]
 
-        r = lo_r + (t * dr).round
-        g = lo_g + (t * dg).round
-        b = lo_b + (t * db).round
+        r = (255 * color[:r]).to_i
+        g = (255 * color[:g]).to_i
+        b = (255 * color[:b]).to_i
+        a = (255 * color[:a]).to_i
 
-        set[distance] = (r << 24) + (g << 16) + (b << 8) + 0xff
+        set[distance] = (r << 24) + (g << 16) + (b << 8) + a
       end
 
       set

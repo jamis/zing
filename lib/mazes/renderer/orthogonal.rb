@@ -20,8 +20,10 @@ module Mazes
           @width = @size * @grid.columns
           @height = @size * @grid.rows
 
-          @width += 2 unless @grid.wrap_horizontal
-          @height += 2 unless @grid.wrap_vertical
+          if @show_walls
+            @width += 2 unless @grid.wrap_horizontal
+            @height += 2 unless @grid.wrap_vertical
+          end
         end
 
         @image = ChunkyPNG::Image.new(@width, @height,
@@ -197,8 +199,10 @@ module Mazes
         x = cell.column * @size
         y = cell.row * @size
 
-        x += 1 unless @grid.wrap_horizontal
-        y += 1 unless @grid.wrap_vertical
+        if @show_walls
+          x += 1 unless @grid.wrap_horizontal
+          y += 1 unless @grid.wrap_vertical
+        end
 
         if @size == 1
           @image[x, y] = color
