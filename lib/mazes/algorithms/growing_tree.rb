@@ -24,11 +24,12 @@ module Mazes
         if @seeds.empty?
           @done = true
         else
-          seed = @heuristic[ @seeds ]
+          index = @heuristic[ @seeds ]
+          seed = @seeds[index]
           unvisited_neighbors = seed.neighbors.select { |n| n.links.empty? }
 
           if unvisited_neighbors.empty?
-            @seeds.delete(seed)
+            @seeds.delete_at(index)
             @on_delete[[seed]]
           else
             neighbor = unvisited_neighbors.sample
@@ -49,11 +50,11 @@ module Mazes
 
       def _named_heuristic(name)
         case name
-          when :last     then ->(seeds) { seeds.last }
-          when :random   then ->(seeds) { seeds.sample }
+          when :last     then ->(seeds) { seeds.length-1 }
+          when :random   then ->(seeds) { rand(seeds.length) }
           when :weighted then
             weights = _random_weights
-            ->(seeds) { seeds.sort_by { |a| weights[a] }.last }
+            ->(seeds) { seeds.index(seeds.sort_by { |a| weights[a] }.last) }
           else name
         end
       end
