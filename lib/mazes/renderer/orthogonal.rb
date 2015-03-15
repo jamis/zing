@@ -37,7 +37,7 @@ module Mazes
           end
 
           @image.rect(@width-@size, @height-@size, @width, @height, @colors[:wall], @colors[:wall])
-        else
+        elsif @show_walls
           if !@grid.wrap_horizontal
             @image.line(0, 0, 0, @height-1, @colors[:wall])
             @image.line(@width-1, 0, @width-1, @height-1, @colors[:wall])
@@ -200,18 +200,23 @@ module Mazes
         x += 1 unless @grid.wrap_horizontal
         y += 1 unless @grid.wrap_vertical
 
-        @image.rect(x, y, x+@size-1, y+@size-1, color, color)
+        if @size == 1
+          @image[x, y] = color
 
-        if @show_walls
-          @image[x, y] = wall
-          @image[x+@size-1, y] = wall
-          @image[x, y+@size-1] = wall
-          @image[x+@size-1, y+@size-1] = wall
+        else
+          @image.rect(x, y, x+@size-1, y+@size-1, color, color)
 
-          @image.line(x, y, x+@size-1, y, wall) unless cell.linked?(:n)
-          @image.line(x, y+@size-1, x+@size-1, y+@size-1, wall) unless cell.linked?(:s)
-          @image.line(x, y, x, y+@size-1, wall) unless cell.linked?(:w)
-          @image.line(x+@size-1, y, x+@size-1, y+@size-1, wall) unless cell.linked?(:e)
+          if @show_walls
+            @image[x, y] = wall
+            @image[x+@size-1, y] = wall
+            @image[x, y+@size-1] = wall
+            @image[x+@size-1, y+@size-1] = wall
+
+            @image.line(x, y, x+@size-1, y, wall) unless cell.linked?(:n)
+            @image.line(x, y+@size-1, x+@size-1, y+@size-1, wall) unless cell.linked?(:s)
+            @image.line(x, y, x, y+@size-1, wall) unless cell.linked?(:w)
+            @image.line(x+@size-1, y, x+@size-1, y+@size-1, wall) unless cell.linked?(:e)
+          end
         end
       end
 
