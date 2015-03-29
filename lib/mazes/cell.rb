@@ -19,6 +19,11 @@ module Mazes
       cell.link(self, false) if reciprocate
     end
 
+    def unlink(cell, reciprocate=true)
+      @links.delete(cell)
+      cell.unlink(self, false) if reciprocate
+    end
+
     def linked?(cell)
       cell = send(cell) if cell.is_a?(Symbol)
       @links[cell]
